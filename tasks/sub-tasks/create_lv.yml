@@ -1,0 +1,22 @@
+---
+- name: lvm | creating logical volume
+  lvol:
+    vg: "{{ vg.vg_name }}"
+    lv: "{{ lv.lv_name }}"
+    size: "{{ lv.size }}"
+    shrink: false
+    opts: "{{ lv.opts | default('') }}"
+    state: present
+  register: lvchanged
+  when:
+    - vg.state is defined
+    - vg.state == "present"
+    - lv is defined
+    - lv != 'None'
+    - lv.state is defined
+    - lv.state == "present"
+
+
+- name: lvm | configuring filesystem
+  include_tasks:
+    file: tasks/sub-tasks/create_fs.yml

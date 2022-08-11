@@ -1,0 +1,44 @@
+---
+- name: lvm | manage physical volume group creation
+  include_tasks:
+    file: tasks/sub-tasks/create_vg.yml
+  loop: "{{ lvm_vg_list }}"
+  loop_control:
+    loop_var: vg
+
+
+- name: lvm | umount logical volume
+  mount:
+    path: "{{ item.1.mount_point }}"
+    state: absent
+  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
+  when:
+    - item.1 is defined
+    - item.1 != 'None'
+    - item.1.state is defined
+    - item.1.state == "absent"
+
+
+- name: lvm | removing logical volume
+  lvol:
+    vg: "{{ item.0.vg_name }}"
+    lv: "{{ item.1.lv_name }}"
+    state: absent
+    force: true
+  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
+  when:
+    - item.1 is defined
+    - item.1 != 'None'
+    - item.1.state is defined
+    - item.1.state == "absent"
+
+
+- name: lvm | removing volume group
+  lvg:
+    vg: "{{ item.vg_name }}"
+    pvs: "{{ item.pv_list | join(',') }}"
+    state: absent
+  loop: "{{ lvm_vg_list }}"
+  when:
+    - item.state is defined
+    - item.state == "absent"

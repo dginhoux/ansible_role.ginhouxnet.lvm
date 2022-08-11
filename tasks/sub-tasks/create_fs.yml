@@ -1,0 +1,94 @@
+---
+# # unable to resize xfs: looks like we've to reference the mountpoint instead of the device
+# - name: lvm | check logical volume already converted
+#   # at least xfs is executed twice if the partition has changed in the meantime
+#   # then it tries to recreate the fs on the mounted fs which indeed fails...
+#   shell: "xfs_info {{ lv.mount_point }} | grep -c 'ftype=1'"
+#   register: mountedxfs
+#   ignore_errors: true
+#   changed_when: false
+#   when:
+#     - lv is defined and lv != 'None'
+#     - lv.filesystem is defined
+#     - lv.filesystem == "xfs"
+#     - lv.state is defined
+#     - lv.state == "present"
+
+
+# - name: lvm | unmounting logical volume
+#   mount:
+#     path: "{{ lv.mount_point }}"
+#     src: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+#     fstype: "{{ lv.filesystem | default(omit) }}"
+#     state: absent
+#   when:
+#     - lv is defined
+#     - lv != 'None'
+#     - lv.state is defined
+#     - lv.state == "present"
+#     - lv.filesystem != "swap"
+
+
+- name: lvm | creating filesystem on logical volume
+  filesystem:
+    fstype: "{{ lv.filesystem }}"
+    dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+    resizefs: yes
+  when:
+    - vg.state is defined
+    - vg.state == "present"
+    - lv is defined
+    - lv != 'None'
+    - lv.state is defined
+    - lv.state == "present"
+    - lv.filesystem is defined
+    - lv.filesystem != 'None'
+    # - lv.filesystem != 'xfs'
+
+
+# - name: lvm | creating xfs filesystem on logical volume
+#   filesystem:
+#     fstype: "{{ lv.filesystem }}"
+#     dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+#   when:
+#     - mountedxfs is failed
+#     - vg.state is defined
+#     - vg.state == "present"
+#     - lv is defined
+#     - lv != 'None'
+#     - lv.state is defined
+#     - lv.state == "present"
+#     - lv.filesystem is defined
+#     - lv.filesystem == 'xfs'
+
+
+- name: lvm | mounting logical volume
+  mount:
+    path: "{{ lv.mount_point }}"
+    src: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+    fstype: "{{ lv.filesystem }}"
+    state: mounted
+    opts: "{{ lv.mopts | default('defaults') }}"
+  when:
+    - vg.state is defined
+    - vg.state == "present"
+    - lv is defined
+    - lv != 'None'
+    - lv.state is defined
+    - lv.state == "present"
+    - lv.mount is defined
+    - lv.mount | bool
+
+
+# - name: create_fs | resizing xfs filesystem on logical volume
+#   command: "xfs_growfs {{ lv.mount_point }}"
+#   when:
+#     - vg.state is defined
+#     - vg.state == "present"
+#     - lv is defined
+#     - lv != 'None'
+#     - lv.state is defined
+#     - lv.state == "present"
+#     - lv.filesystem is defined
+#     - lv.filesystem == 'xfs'
+#     - lvchanged.changed
