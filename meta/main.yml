@@ -2,10 +2,10 @@
 
 galaxy_info:
   role_name: ginhouxnet.lvm
-  author: dginhoux
   description: install kvm and configure volume groupe, logicial volume and create filesystem
+  author: dginhoux
   company: ginhouxnet
-  license: MIT
+  license: BSD
   min_ansible_version: "2.12"
   platforms:
     - name: Debian
