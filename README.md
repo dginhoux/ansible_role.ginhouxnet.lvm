@@ -7,7 +7,7 @@ This ansible role configure lvm, create, remove, extend and mount
 Requirements
 ------------
 
-This ansible role will only run on identified OS defined on meta/main.yml
+This role is built to only run on platforms defined in `meta/main.yml`
 
 
 Role Variables
@@ -49,8 +49,7 @@ lvm_vg_list:
 Dependencies
 ------------
 
-
-
+none
 
 Example Playbook
 ----------------
@@ -66,4 +65,4 @@ BSD
 Author Information
 ------------------
 
-Dany GINHOUX
+https://github.com/dginhoux/
