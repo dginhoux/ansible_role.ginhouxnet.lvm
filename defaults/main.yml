@@ -4,7 +4,6 @@ lvm_configure: false
 
 lvm_pvresize_to_max: true
 
-
 lvm_vg_list: []
 # - vgname: ubuntu-vg
 #   disks:

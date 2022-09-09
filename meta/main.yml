@@ -1,5 +1,4 @@
 ---
-
 galaxy_info:
   role_name: lvm
   description: install kvm and configure volume groupe, logicial volume and create filesystem
@@ -28,6 +27,5 @@ galaxy_info:
     - vg
     - lv
     - filesystem
-
 
 dependencies: []

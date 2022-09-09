@@ -4,7 +4,6 @@
     update_cache: true
     cache_valid_time: 3600
 
-
 - name: lvm, debian | installing required packages
   apt:
     name:
@@ -13,18 +12,15 @@
       - xfsprogs
     state: present
 
-
 - name: lvm, debian | checking for scsi devices
   command: sg_scan
   register: scsi_devices
   changed_when: false
 
-
 - name: lvm, debian | rescanning for new disks added
   command: /sbin/rescan-scsi-bus
   changed_when: false
   when: scsi_devices['stdout'] | length
-
 
 - include_tasks:
     file: tasks/sub-tasks/manage_lvm.yml
