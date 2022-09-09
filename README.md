@@ -15,8 +15,9 @@ Role Variables
 
 
 
-```
+```yaml
 lvm_pvresize_to_max: "true"
+
 
 lvm_vg_list:
   - vg_name: vg_ansible
@@ -42,7 +43,6 @@ lvm_vg_list:
         # mount: "true"
         # mount_point: /mnt/lv_swarm_registry
         state: present
-
 ```
 
 
