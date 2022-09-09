@@ -1,4 +1,4 @@
-ginhouxnet.lvm
+Ansible Role : dginhoux.lvm
 =========
 
 This ansible role configure lvm, create, remove, extend and mount
