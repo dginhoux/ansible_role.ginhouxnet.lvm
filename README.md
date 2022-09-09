@@ -13,7 +13,7 @@ This role is built to only run on platforms defined in `meta/main.yml`
 Role Variables
 --------------
 
-It's just a simple list like : 
+
 
 ```
 lvm_pvresize_to_max: "true"
@@ -50,6 +50,7 @@ Dependencies
 ------------
 
 none
+
 
 Example Playbook
 ----------------
