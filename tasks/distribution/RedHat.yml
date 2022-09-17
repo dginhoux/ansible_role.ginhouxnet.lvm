@@ -1,6 +1,6 @@
 ---
 - name: lvm, redhat | installing required packages
-  package:
+  ansible.builtin.package:
     name:
       - lvm2
       - sg3_utils
@@ -8,21 +8,21 @@
     state: present
 
 - name: lvm, redhat | checking for scsi devices
-  command: sg_scan
+  ansible.builtin.command: sg_scan
   register: scsi_devices
   changed_when: false
 
 - name: lvm, redhat | rescanning for new disks
-  command: /usr/bin/rescan-scsi-bus.sh
+  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh
   changed_when: false
   when: scsi_devices.stdout | length > 0
 
 - name: lvm, redhat | rescanning for resized disks
-  command: /usr/bin/rescan-scsi-bus.sh -s
+  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh -s
   changed_when: false
   when: scsi_devices.stdout | length > 0
 
-- include_tasks:
+- ansible.builtin.include_tasks:
     file: tasks/sub-tasks/manage_lvm.yml
   when:
     - lvm_vg_list is defined

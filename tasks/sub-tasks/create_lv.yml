@@ -1,6 +1,6 @@
 ---
 - name: lvm | creating logical volume
-  lvol:
+  community.general.lvol:
     vg: "{{ vg.vg_name }}"
     lv: "{{ lv.lv_name }}"
     size: "{{ lv.size }}"
@@ -18,5 +18,5 @@
 
 
 - name: lvm | configuring filesystem
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: tasks/sub-tasks/create_fs.yml

@@ -3,7 +3,7 @@
 # - name: lvm | check logical volume already converted
 #   # at least xfs is executed twice if the partition has changed in the meantime
 #   # then it tries to recreate the fs on the mounted fs which indeed fails...
-#   shell: "xfs_info {{ lv.mount_point }} | grep -c 'ftype=1'"
+#   ansible.builtin.shell: "xfs_info {{ lv.mount_point }} | grep -c 'ftype=1'"
 #   register: mountedxfs
 #   ignore_errors: true
 #   changed_when: false
@@ -30,7 +30,7 @@
 
 
 - name: lvm | creating filesystem on logical volume
-  filesystem:
+  community.general.filesystem:
     fstype: "{{ lv.filesystem }}"
     dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
     resizefs: true
@@ -47,7 +47,7 @@
 
 
 # - name: lvm | creating xfs filesystem on logical volume
-#   filesystem:
+#   community.general.filesystem:
 #     fstype: "{{ lv.filesystem }}"
 #     dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
 #   when:
@@ -63,7 +63,7 @@
 
 
 - name: lvm | mounting logical volume
-  mount:
+  ansible.posix.mount:
     path: "{{ lv.mount_point }}"
     src: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
     fstype: "{{ lv.filesystem }}"
@@ -81,7 +81,7 @@
 
 
 # - name: create_fs | resizing xfs filesystem on logical volume
-#   command: "xfs_growfs {{ lv.mount_point }}"
+#   ansible.builtin.command: "xfs_growfs {{ lv.mount_point }}"
 #   when:
 #     - vg.state is defined
 #     - vg.state == "present"

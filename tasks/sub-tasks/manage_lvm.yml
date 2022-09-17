@@ -1,6 +1,6 @@
 ---
 - name: lvm | manage physical volume group creation
-  include_tasks:
+  ansible.builtin.include_tasks:
     file: tasks/sub-tasks/create_vg.yml
   loop: "{{ lvm_vg_list }}"
   loop_control:
@@ -8,7 +8,7 @@
 
 
 - name: lvm | umount logical volume
-  mount:
+  ansible.posix.mount:
     path: "{{ item.1.mount_point }}"
     state: absent
   loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
@@ -20,7 +20,7 @@
 
 
 - name: lvm | removing logical volume
-  lvol:
+  community.general.lvol:
     vg: "{{ item.0.vg_name }}"
     lv: "{{ item.1.lv_name }}"
     state: absent
@@ -34,7 +34,7 @@
 
 
 - name: lvm | removing volume group
-  lvg:
+  community.general.lvg:
     vg: "{{ item.vg_name }}"
     pvs: "{{ item.pv_list | join(',') }}"
     state: absent
