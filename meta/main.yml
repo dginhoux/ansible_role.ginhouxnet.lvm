@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: lvm
-  description: install kvm and configure volume groupe, logicial volume and create filesystem
+  description: dginhoux.lvm
   author: Dany GINHOUX
   company: dginhoux
   license: MIT
