@@ -4,7 +4,7 @@
 
 ## DESCRIPTION
 
-This ansible role configure lvm, create, remove, extend and mount
+This ansible role configure lvm, create, remove, extend and mount lv.
 
 
 

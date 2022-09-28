@@ -1,7 +1,8 @@
 ---
 galaxy_info:
   role_name: lvm
-  description: dginhoux.lvm
+  description: |
+    This ansible role configure lvm, create, remove, extend and mount lv.
   author: Dany GINHOUX
   company: dginhoux
   license: MIT
