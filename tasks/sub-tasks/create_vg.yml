@@ -1,5 +1,5 @@
 ---
-- name: lvm | creating volume group
+- name: Lvm | creating volume group
   community.general.lvg:
     vg: "{{ vg.vg_name }}"
     pvs: "{{ vg.pv_list | join(',') }}"
@@ -9,7 +9,7 @@
     - vg.state == "present"
 
 
-- name: lvm | pvresize to max available free space
+- name: Lvm | pvresize to max available free space
   ansible.builtin.command: "pvresize {{ pv }}"
   loop: "{{ vg.pv_list | default([]) }}"
   loop_control:
@@ -21,7 +21,7 @@
     - lvm_pvresize_to_max | bool
 
 
-- name: lvm | loop volume group to create logical volume
+- name: Lvm | loop volume group to create logical volume
   ansible.builtin.include_tasks:
     file: tasks/sub-tasks/create_lv.yml
   loop: "{{ vg.lv_list | default([]) }}"

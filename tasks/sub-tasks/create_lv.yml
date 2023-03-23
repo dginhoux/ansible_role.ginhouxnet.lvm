@@ -1,5 +1,5 @@
 ---
-- name: lvm | creating logical volume
+- name: Lvm | creating logical volume
   community.general.lvol:
     vg: "{{ vg.vg_name }}"
     lv: "{{ lv.lv_name }}"
@@ -17,6 +17,6 @@
     - lv.state == "present"
 
 
-- name: lvm | configuring filesystem
+- name: Lvm | configuring filesystem
   ansible.builtin.include_tasks:
     file: tasks/sub-tasks/create_fs.yml

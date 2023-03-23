@@ -1,10 +1,10 @@
 ---
-- name: lvm, debian | update apt cache
+- name: Lvm, debian | update apt cache
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
 
-- name: lvm, debian | installing required packages
+- name: Lvm, debian | installing required packages
   ansible.builtin.apt:
     name:
       - lvm2
@@ -12,17 +12,18 @@
       - xfsprogs
     state: present
 
-- name: lvm, debian | checking for scsi devices
+- name: Lvm, debian | checking for scsi devices
   ansible.builtin.command: sg_scan
   register: scsi_devices
   changed_when: false
 
-- name: lvm, debian | rescanning for new disks added
+- name: Lvm, debian | rescanning for new disks added
   ansible.builtin.command: /sbin/rescan-scsi-bus
   changed_when: false
   when: scsi_devices['stdout'] | length
 
-- ansible.builtin.include_tasks:
+- name: Include tasks for lvm volumes
+  ansible.builtin.include_tasks:
     file: tasks/sub-tasks/manage_lvm.yml
   when:
     - lvm_vg_list is defined
