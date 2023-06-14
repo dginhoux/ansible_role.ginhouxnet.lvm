@@ -1,29 +1,29 @@
 ---
 - name: Lvm | creating volume group
+  when:
+    - vg.state is defined
+    - vg.state == "present"
   community.general.lvg:
     vg: "{{ vg.vg_name }}"
     pvs: "{{ vg.pv_list | join(',') }}"
     state: present
-  when:
-    - vg.state is defined
-    - vg.state == "present"
 
 
 - name: Lvm | pvresize to max available free space
-  ansible.builtin.command: "pvresize {{ pv }}"
-  loop: "{{ vg.pv_list | default([]) }}"
-  loop_control:
-    loop_var: pv
-  changed_when: false
   when:
     - vg.state is defined
     - vg.state == "present"
     - lvm_pvresize_to_max | bool
+  loop: "{{ vg.pv_list | default([]) }}"
+  loop_control:
+    loop_var: pv
+  changed_when: false
+  ansible.builtin.command: "pvresize {{ pv }}"
 
 
 - name: Lvm | loop volume group to create logical volume
-  ansible.builtin.include_tasks:
-    file: tasks/sub-tasks/create_lv.yml
   loop: "{{ vg.lv_list | default([]) }}"
   loop_control:
     loop_var: lv
+  ansible.builtin.include_tasks:
+    file: tasks/sub-tasks/create_lv.yml

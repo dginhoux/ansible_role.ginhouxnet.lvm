@@ -1,13 +1,5 @@
 ---
 - name: Lvm | creating logical volume
-  community.general.lvol:
-    vg: "{{ vg.vg_name }}"
-    lv: "{{ lv.lv_name }}"
-    size: "{{ lv.size }}"
-    shrink: false
-    opts: "{{ lv.opts | default('') }}"
-    state: present
-  register: lvchanged
   when:
     - vg.state is defined
     - vg.state == "present"
@@ -15,6 +7,14 @@
     - lv != 'None'
     - lv.state is defined
     - lv.state == "present"
+  register: lvchanged
+  community.general.lvol:
+    vg: "{{ vg.vg_name }}"
+    lv: "{{ lv.lv_name }}"
+    size: "{{ lv.size }}"
+    shrink: false
+    opts: "{{ lv.opts | default('') }}"
+    state: present
 
 
 - name: Lvm | configuring filesystem

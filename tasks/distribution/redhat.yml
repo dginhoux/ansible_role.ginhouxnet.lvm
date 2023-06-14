@@ -8,23 +8,23 @@
     state: present
 
 - name: Lvm, redhat | checking for scsi devices
-  ansible.builtin.command: sg_scan
   register: scsi_devices
   changed_when: false
+  ansible.builtin.command: sg_scan
 
 - name: Lvm, redhat | rescanning for new disks
-  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh
-  changed_when: false
   when: scsi_devices.stdout | length > 0
+  changed_when: false
+  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh
 
 - name: Lvm, redhat | rescanning for resized disks
-  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh -s
-  changed_when: false
   when: scsi_devices.stdout | length > 0
+  changed_when: false
+  ansible.builtin.command: /usr/bin/rescan-scsi-bus.sh -s
 
 - name: Include tasks for lvm volumes
-  ansible.builtin.include_tasks:
-    file: tasks/sub-tasks/manage_lvm.yml
   when:
     - lvm_vg_list is defined
     - lvm_configure | bool
+  ansible.builtin.include_tasks:
+    file: tasks/sub-tasks/manage_lvm.yml

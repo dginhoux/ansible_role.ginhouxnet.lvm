@@ -30,10 +30,6 @@
 
 
 - name: Lvm | creating filesystem on logical volume
-  community.general.filesystem:
-    fstype: "{{ lv.filesystem }}"
-    dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
-    resizefs: true
   when:
     - vg.state is defined
     - vg.state == "present"
@@ -44,6 +40,10 @@
     - lv.filesystem is defined
     - lv.filesystem != 'None'
     # - lv.filesystem != 'xfs'
+  community.general.filesystem:
+    fstype: "{{ lv.filesystem }}"
+    dev: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+    resizefs: true
 
 
 # - name: lvm | creating xfs filesystem on logical volume
@@ -63,12 +63,6 @@
 
 
 - name: Lvm | mounting logical volume
-  ansible.posix.mount:
-    path: "{{ lv.mount_point }}"
-    src: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
-    fstype: "{{ lv.filesystem }}"
-    state: mounted
-    opts: "{{ lv.mopts | default('defaults') }}"
   when:
     - vg.state is defined
     - vg.state == "present"
@@ -78,6 +72,12 @@
     - lv.state == "present"
     - lv.mount is defined
     - lv.mount | bool
+  ansible.posix.mount:
+    path: "{{ lv.mount_point }}"
+    src: "/dev/{{ vg.vg_name }}/{{ lv.lv_name }}"
+    fstype: "{{ lv.filesystem }}"
+    state: mounted
+    opts: "{{ lv.mopts | default('defaults') }}"
 
 
 # - name: create_fs | resizing xfs filesystem on logical volume

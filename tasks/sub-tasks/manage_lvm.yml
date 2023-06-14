@@ -1,44 +1,44 @@
 ---
 - name: Lvm | manage physical volume group creation
-  ansible.builtin.include_tasks:
-    file: tasks/sub-tasks/create_vg.yml
   loop: "{{ lvm_vg_list }}"
   loop_control:
     loop_var: vg
+  ansible.builtin.include_tasks:
+    file: tasks/sub-tasks/create_vg.yml
 
 
 - name: Lvm | umount logical volume
-  ansible.posix.mount:
-    path: "{{ item.1.mount_point }}"
-    state: absent
-  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
   when:
     - item.1 is defined
     - item.1 != 'None'
     - item.1.state is defined
     - item.1.state == "absent"
+  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
+  ansible.posix.mount:
+    path: "{{ item.1.mount_point }}"
+    state: absent
 
 
 - name: Lvm | removing logical volume
+  when:
+    - item.1 is defined
+    - item.1 != 'None'
+    - item.1.state is defined
+    - item.1.state == "absent"
+  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
   community.general.lvol:
     vg: "{{ item.0.vg_name }}"
     lv: "{{ item.1.lv_name }}"
     state: absent
     force: true
-  loop: "{{ lvm_vg_list | subelements('lv_list', {'skip_missing': true}) }}"
-  when:
-    - item.1 is defined
-    - item.1 != 'None'
-    - item.1.state is defined
-    - item.1.state == "absent"
 
 
 - name: Lvm | removing volume group
+  when:
+    - item.state is defined
+    - item.state == "absent"
+  loop: "{{ lvm_vg_list }}"
   community.general.lvg:
     vg: "{{ item.vg_name }}"
     pvs: "{{ item.pv_list | join(',') }}"
     state: absent
-  loop: "{{ lvm_vg_list }}"
-  when:
-    - item.state is defined
-    - item.state == "absent"
