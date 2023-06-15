@@ -3,7 +3,7 @@
 # - name: lvm | check logical volume already converted
 #   # at least xfs is executed twice if the partition has changed in the meantime
 #   # then it tries to recreate the fs on the mounted fs which indeed fails...
-#   ansible.builtin.shell: "xfs_info {{ lv.mount_point }} | grep -c 'ftype=1'"
+#   ansible.builtin.command: "xfs_info {{ lv.mount_point }} | grep -c 'ftype=1'"
 #   register: mountedxfs
 #   ignore_errors: true
 #   changed_when: false
